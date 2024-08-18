@@ -34,10 +34,7 @@
                 {
                         "label": "build all",
                         "command": "make",
-                        "group": {
-                                "kind": "build",
-                                "isDefault": true
-                        }
+                        "group": "build"
                 },
                 {
                         "label": "part.logo",
@@ -52,7 +49,10 @@
                 {
                         "label": "part.fatal",
                         "command": "make clean-part.fatal build/part.fatal.bin",
-                        "group": "build"
+                        "group": {
+                                "kind": "build",
+                                "isDefault": true
+                        }
                 }
         ]
 }
