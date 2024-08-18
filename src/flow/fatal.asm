@@ -6,7 +6,7 @@ A_PART_FATAL_MAIN2 	equ A_PART_FATAL + 12
 
 	; part.fatal: depack and initialization
 	ld a, P_PART_FATAL : call lib.SetPage
-	ld hl, PART_FATAL_PACKED
+	ld hl, PART_FATAL_PCK
 	ld de, A_PART_FATAL
 	call lib.Depack
 

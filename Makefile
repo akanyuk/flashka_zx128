@@ -2,7 +2,7 @@
 PROJECT_NAME = fleshka
 
 # Listing the parts that should be assembled automatically
-PARTS=part.logo part.analyze part.fatal
+PARTS=part.analyze part.fatal
 
 NAME_SUFFIX = $(shell date +%Y%m%d)-$(shell git log --format="%h" -n 1)
 

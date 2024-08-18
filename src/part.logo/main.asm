@@ -3,8 +3,6 @@
 	; define DEBUG 1
 
 A_PART_LOGO  	equ #7000
-A_PART_LOGO_INIT 	equ A_PART_LOGO
-A_PART_LOGO_MAIN   	equ A_PART_LOGO + 3 
 
 	org #6000
 start	
@@ -14,11 +12,11 @@ start
 
 	di : ld sp, start
 
-	xor a : out #fe, a
+	ld a, 7 : out #fe, a
 	ld a,#5c, i,a, hl,interr, (#5cff),hl : im 2 : ei
 
-	call A_PART_LOGO_INIT
-	call A_PART_LOGO_MAIN
+	call A_PART_LOGO
+
 	jr $
 
 interr	ei : ret

@@ -21,7 +21,8 @@ page0s	module lib
 	endmodule
 
 	di : ld sp, page0s
-	xor a : out (#fe), a 
+
+	ld a, 7 : out (#fe), a 	
 	call lib.SetScreenAttr
 	call lib.ClearScreen
 	ld a,#5c : ld i,a : ld hl,interr : ld (#5cff),hl : im 2 : ei
@@ -32,14 +33,16 @@ page0s	module lib
 	ld a, #01 : ld (MUSIC_STATE), a
 	endif
 
-	include "flow/logo.asm"
+	call A_PART_LOGO
+	ld b, 50 : halt : djnz $-1
+
+	xor a : out (#fe), a 	
+	call lib.SetScreenAttr
+	
 	include "flow/fatal.asm"
 	include "flow/analyze.asm"
 
-	di 
-	ld a, P_TRACK : call lib.SetPage
-	call PT3PLAY + 8	
-	halt
+	jr $
 
 	; запуск нужной процедуры на прерываниях
 	; HL - адрес процедура
@@ -95,17 +98,12 @@ INTS_COUNTER	equ $+1
 A_PART_LOGO	module part_logo
 	include "part.logo/part.logo.asm"
 	endmodule
-
-_PAGE0_SLOT1_END	; Свободное место истратить до части analyze
-
-	org #c000
-	display /d, '[page 0] slot 1 free: ', $ - _PAGE0_SLOT1_END
-page0e	display /d, '[page 0] slot 2 free: ', 65536 - $, ' (', $, ')'
+page0e	
 
 	define _page1 : page 1 : org #c000
 page1s	
-PART_FATAL_PACKED	incbin "build/part.fatal.bin.zx0"
-PART_ANALYZE_PACKED	incbin "build/part.analyze.bin.zx0"
+PART_ANALYZ_PCK	incbin "build/part.analyze.bin.zx0"
+PART_FATAL_PCK	incbin "build/part.fatal.bin.zx0"
 page1e	display /d, '[page 1] free: ', 65536 - $, ' (', $, ')'
 
 	define _page3 : page 3 : org #c000
