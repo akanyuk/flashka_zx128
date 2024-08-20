@@ -1,7 +1,12 @@
 	ld (_iT1 + 1), de
 	ld (_iT2 + 1), hl
 _iT1	ld DE, 0
-	ld a, 0 : inc a : and 1 : ld ($-4), a
+	
+	ld a, 0 
+	inc a 
+textSpd	equ $+1	
+	and 1 
+	ld ($-4), a
 	cp 1 : jr nz, $+3
 	halt
 _iT2	ld HL, 0 : ld A, (HL)

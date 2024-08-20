@@ -1,8 +1,11 @@
-A_PART_FATAL_INIT0 	equ A_PART_FATAL
-A_PART_FATAL_INIT1 	equ A_PART_FATAL + 3
-A_PART_FATAL_INIT2 	equ A_PART_FATAL + 6
-A_PART_FATAL_MAIN1 	equ A_PART_FATAL + 9
-A_PART_FATAL_MAIN2 	equ A_PART_FATAL + 12
+FATAL_INIT1 	equ A_PART_FATAL
+FATAL_INIT2 	equ A_PART_FATAL + 3
+FATAL_INTERR 	equ A_PART_FATAL + 6
+FATAL_BGSW 	equ A_PART_FATAL + 9
+FATAL_TEXT1 	equ A_PART_FATAL + 12
+FATAL_TEXT2 	equ A_PART_FATAL + 15
+FATAL_TEXT3 	equ A_PART_FATAL + 18
+FATAL_TEXT4 	equ A_PART_FATAL + 21
 
 	; part.fatal: depack and initialization
 	ld a, P_PART_FATAL : call lib.SetPage
@@ -10,20 +13,50 @@ A_PART_FATAL_MAIN2 	equ A_PART_FATAL + 12
 	ld de, A_PART_FATAL
 	call lib.Depack
 
-	; part.fatal: main
-	call A_PART_FATAL_INIT0
-	ld b, 100 : halt : djnz $-1
+	; 1
+	ld a, %01000110
+	call FATAL_INIT1
 
-	call A_PART_FATAL_INIT1
-	ld b, 10*4
-1	push bc
-	call A_PART_FATAL_MAIN1
-	halt
-	pop bc : djnz 1b
+	ld hl, FATAL_INTERR
+	call interrStart
 
-	call A_PART_FATAL_INIT2
-	ld b, 15*3
-1	push bc
-	call A_PART_FATAL_MAIN2
-	halt
-	pop bc : djnz 1b
+	ld b, 15 : halt : djnz $-1
+	call FATAL_TEXT2
+	ld b, 75 : halt : djnz $-1
+	call interrStop : halt
+	
+	; 2
+	ld a, %01000011
+	call FATAL_INIT2
+
+	ld hl, FATAL_INTERR
+	call interrStart
+
+	ld b, 15 : halt : djnz $-1
+	call FATAL_TEXT4
+	ld b, 75 : halt : djnz $-1
+	call interrStop : halt
+
+	; 3
+	; ld a, %01000010
+	; call FATAL_INIT1
+
+	; ld hl, FATAL_INTERR
+	; call interrStart
+
+	; ld b, 15 : halt : djnz $-1
+	; call FATAL_TEXT3
+	; ld b, 75 : halt : djnz $-1
+	; call interrStop : halt
+
+	; 4
+	ld a, %01000111
+	call FATAL_INIT1
+	call FATAL_BGSW
+
+	ld hl, FATAL_INTERR
+	call interrStart
+
+	call FATAL_TEXT1
+	ld b, 70 : halt : djnz $-1
+	call interrStop : halt

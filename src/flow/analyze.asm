@@ -14,18 +14,16 @@ A_PART_ANAL_CC   	equ A_PART_ANALYZE + 6
 	ld hl, A_PART_ANAL_MAIN
 	call interrStart
 
-	ld b, 178 : halt : djnz $-1
+	; ld hl, (INTS_COUNTER) : ld de, 1534 : sbc hl, de : jr c, $-8
+	ld hl, (INTS_COUNTER) : ld de, 1920-2 : sbc hl, de : jr c, $-8
 
 	ld a, #07 : out #fe, a
 	halt : halt
 	xor a : out #fe, a	
 
-	ld bc, 500
-1	push bc
-	halt
-	call A_PART_ANAL_CC
-	pop bc
-	dec bc
-	ld a, b : or c : jr nz, 1b
+	; infinity loop
+1 	halt
+ 	call A_PART_ANAL_CC
+	jr 1b
 
-	call interrStop
+

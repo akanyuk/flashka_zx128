@@ -23,9 +23,8 @@ page0s	module lib
 	di : ld sp, page0s
 
 	ld a, 7 : out (#fe), a 	
-	call lib.SetScreenAttr
+	ld a, %00111000 : call lib.SetScreenAttr
 	call lib.ClearScreen
-	ld a,#5c : ld i,a : ld hl,interr : ld (#5cff),hl : im 2 : ei
 
 	ifdef _MUSIC_
 	ld a, P_TRACK : call lib.SetPage
@@ -33,16 +32,20 @@ page0s	module lib
 	ld a, #01 : ld (MUSIC_STATE), a
 	endif
 
+	ld a,#5c : ld i,a : ld hl,interr : ld (#5cff),hl : im 2 : ei
+
+	ld b, 20 : halt : djnz $-1
+
 	call A_PART_LOGO
-	ld b, 50 : halt : djnz $-1
+
+	ld hl, (INTS_COUNTER) : ld de, 380 : sbc hl, de : jr c, $-8
 
 	xor a : out (#fe), a 	
 	call lib.SetScreenAttr
-	
-	include "flow/fatal.asm"
-	include "flow/analyze.asm"
 
-	jr $
+	include "flow/fatal.asm"
+	ld hl, (INTS_COUNTER) : ld de, 1152 - 10 : sbc hl, de : jr c, $-8
+	include "flow/analyze.asm" ; stop here
 
 	; запуск нужной процедуры на прерываниях
 	; HL - адрес процедура
@@ -110,7 +113,7 @@ page1e	display /d, '[page 1] free: ', 65536 - $, ' (', $, ')'
 	define _page3 : page 3 : org #c000
 page3s	
 PT3PLAY	include "lib/PTxPlay.asm"
-	incbin "res/NODEMO-09-02.pt3"
+	incbin "res/fatalsnipe - MISTOS.pt3"
 page3e	display /d, '[page 3] free: ', 65536 - $, ' (', $, ')'
 
 	include "src/builder.asm"

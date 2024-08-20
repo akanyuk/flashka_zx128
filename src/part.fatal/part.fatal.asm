@@ -92,12 +92,14 @@ BG_SWITCH1	db %01011000
 	db %01001000
 	db %01001000
 
-printText1	ld hl, TEXT11
+printText1	ld a, 3 : ld (textSpd), a
+	ld hl, TEXT11
 	ld de, #a000
 	call text
 	ld hl, TEXT12
 	ld de, #b000
 	jp text	
+
 printText2	ld hl, TEXT21
 	ld de, #8000
 	call text
@@ -110,6 +112,7 @@ printText2	ld hl, TEXT21
 	ld hl, TEXT24
 	ld de, #b000
 	jp text	
+
 printText3	ld hl, TEXT31
 	ld de, #8000
 	call text
@@ -126,7 +129,7 @@ printText3	ld hl, TEXT31
 printText4	ld hl, TEXT41
 	ld de, #8000
 	call text
-	ld hl, TEXT44
+	ld hl, TEXT42
 	ld de, #9000
 	call text
 	ld hl, TEXT43

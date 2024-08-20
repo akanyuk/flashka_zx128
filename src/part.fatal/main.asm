@@ -48,16 +48,16 @@ start
 	call interrStop : halt
 
 	; 3
-	ld a, %01000101
-	call FATAL_INIT1
+	; ld a, %01000101
+	; call FATAL_INIT1
 
-	ld hl, FATAL_INTERR
-	call interrStart
+	; ld hl, FATAL_INTERR
+	; call interrStart
 
-	ld b, 25 : halt : djnz $-1
-	call FATAL_TEXT3
-	ld b, 100 : halt : djnz $-1
-	call interrStop : halt
+	; ld b, 25 : halt : djnz $-1
+	; call FATAL_TEXT3
+	; ld b, 100 : halt : djnz $-1
+	; call interrStop : halt
 
 	; 4
 	ld a, %01000111
