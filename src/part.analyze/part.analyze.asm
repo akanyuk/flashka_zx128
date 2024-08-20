@@ -1,7 +1,7 @@
 	jp analyze.MainSlow    	; $+0  - analizators slow
-	jp ccInit     	; $+3  - part CC (sine squares + analyze) init
+	jp init     		; $+3  - part CC (sine squares + analyze) init
 	jp sine_squares.Main   	; $+6  - part CC main	
-ccInit	call analyze.Init
+init	call analyze.Init
 	call sine_squares.Init
 	ld hl, CC_BG_PCK
 	ld de, #4000

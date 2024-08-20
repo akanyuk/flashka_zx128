@@ -13,7 +13,7 @@ Main	call TEST
 	jr 1f
 	; скорость в два раза меньше
 MainSlow	call TEST
-slowler	ld a, #01 : inc a : and #01 : ld (slowler + 1), a : or a : ret nz
+//slowler	ld a, #01 : inc a : and #01 : ld (slowler + 1), a : or a : ret nz
 1	ld hl, SCR_A1 - #0100
 	ld de, SCR_A1
 	ld  b, 15

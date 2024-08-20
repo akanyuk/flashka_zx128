@@ -108,7 +108,7 @@ PART_ANALYZE_END	equ $
 	page 1
 	org #c000
 PT3PLAY	include "../lib/PTxPlay.asm"
-	incbin "res/NODEMO-09-02.pt3"
+	incbin "res/fatalsnipe - MISTOS.pt3"
 
 
 	; build
