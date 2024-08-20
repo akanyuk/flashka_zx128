@@ -1,4 +1,4 @@
-# Fleshka
+# Flashka
 
 ZX Spectrum 128 (Pentagon 128) demo
 

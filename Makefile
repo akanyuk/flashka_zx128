@@ -1,5 +1,5 @@
 # Project name
-PROJECT_NAME = fleshka
+PROJECT_NAME = flashka
 
 # Listing the parts that should be assembled automatically
 PARTS=part.analyze part.fatal
