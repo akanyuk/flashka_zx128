@@ -1,13 +1,16 @@
 	device zxspectrum128
 
-	; define DEBUG 1
+	; define _DEBUG_ 1
 
-A_PART_FATAL	equ #7000
-FATAL_INIT1 	equ A_PART_FATAL
-FATAL_INIT2 	equ A_PART_FATAL + 3
-FATAL_MAIN1 	equ A_PART_FATAL + 6
-FATAL_MAIN2 	equ A_PART_FATAL + 9
-FATAL_TEXT1 	equ A_PART_FATAL + 12
+PART_START	equ #7000
+FATAL_INIT1 	equ PART_START
+FATAL_INIT2 	equ PART_START + 3
+FATAL_INTERR 	equ PART_START + 6
+FATAL_BGSW 	equ PART_START + 9
+FATAL_TEXT1 	equ PART_START + 12
+FATAL_TEXT2 	equ PART_START + 15
+FATAL_TEXT3 	equ PART_START + 18
+FATAL_TEXT4 	equ PART_START + 21
 
 	org #6000
 start	
@@ -18,59 +21,103 @@ start
 	di : ld sp, start
 
 	xor a : out #fe, a
-	ld a,#5c, i,a, hl,interr, (#5cff),hl : im 2 : ei
+	ld a, #5c : ld i, a : ld hl, interr : ld (#5cff), hl : im 2 : ei
 
-	; call FATAL_TEXT1
+	; 1
+	ld a, %01000110
+	call FATAL_INIT1
 
-mainLoop	call FATAL_INIT1
-	ld b, 30
-1	push bc
-	call m1
-	halt
-	pop bc : djnz 1b
+	ld hl, FATAL_INTERR
+	call interrStart
 
+	ld b, 25 : halt : djnz $-1
+	call FATAL_TEXT2
+	ld b, 100 : halt : djnz $-1
+	call interrStop : halt
+	
+	; 2
+	ld a, %01000011
 	call FATAL_INIT2
-	ld b, 45
-1	push bc
-	call m2
-	halt
-	pop bc : djnz 1b
 
-	jr mainLoop
+	ld hl, FATAL_INTERR
+	call interrStart
 
-m1	ifdef DEBUG
-	ld a, #01 : out (#fe), a
-	endif
+	ld b, 25 : halt : djnz $-1
+	call FATAL_TEXT4
+	ld b, 100 : halt : djnz $-1
+	call interrStop : halt
 
-	call FATAL_MAIN1
+	; 3
+	ld a, %01000101
+	call FATAL_INIT1
 
-	ifdef DEBUG
-	ld a, #02 : out (#fe), a
-	endif
+	ld hl, FATAL_INTERR
+	call interrStart
+
+	ld b, 25 : halt : djnz $-1
+	call FATAL_TEXT3
+	ld b, 100 : halt : djnz $-1
+	call interrStop : halt
+
+	; 4
+	ld a, %01000111
+	call FATAL_INIT2
+	call FATAL_BGSW
+
+	ld hl, FATAL_INTERR
+	call interrStart
+
+	ld b, 25 : halt : djnz $-1
+	call FATAL_TEXT1
+	ld b, 150 : halt : djnz $-1
+	call interrStop : halt
+
+	jr $
+
+	; запуск нужной процедуры на прерываниях
+	; HL - адрес процедура
+interrStart	ld de, interrCurrent
+	ex de, hl
+	ld (hl), #c3 ; jp
+	inc hl : ld (hl), e
+	inc hl : ld (hl), d
 	ret
 
-m2	ifdef DEBUG
-	ld a, #01 : out (#fe), a
-	endif
-
-	call FATAL_MAIN2
-
-	ifdef DEBUG
-	ld a, #02 : out (#fe), a
-	endif
+	; остановка процедуры на прерываниях
+interrStop	ld hl, interrCurrent
+	ld (hl), #c9 ; ret
 	ret
 
+interrCurrent	ret
+	nop
+	nop
 
-interr	ei : ret
+interr	di
+	push af,bc,de,hl,ix,iy
+	exx : ex af, af'
+	push af,bc,de,hl,ix,iy
+	ifdef _DEBUG_ : ld a, #01 : out (#fe), a : endif
 
-	org A_PART_FATAL
+	call interrCurrent
+	
+INTS_COUNTER	equ $+1
+	ld hl, #0000 : inc hl : ld ($-3), hl
+
+	ifdef _DEBUG_ : xor a : out (#fe), a : endif
+	pop iy,ix,hl,de,bc,af
+	exx : ex af, af'
+	pop iy,ix,hl,de,bc,af
+	ei
+	ret
+	
+	org PART_START
 	include "part.fatal.asm"
-	display /d, 'Part length: ', $ - A_PART_FATAL
+	display /d, 'Part length: ', $ - PART_START
 	display 'Part ended at: ', $
 
 	; build
 	if (_ERRORS == 0 && _WARNINGS == 0)
 	;  LABELSLIST "user.l"
 	  savesna SNA_FILENAME, start	     ; SNA_FILENAME defined in Makefile
-	  savebin BIN_FILENAME, A_PART_FATAL, $-A_PART_FATAL ; BIN_FILENAME defined in Makefile
+	  savebin BIN_FILENAME, PART_START, $-PART_START ; BIN_FILENAME defined in Makefile
 	endif

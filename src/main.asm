@@ -83,6 +83,7 @@ MUSIC_STATE	equ $+1
 	endif
 
 	call interrCurrent
+	
 	; счетчик интов
 INTS_COUNTER	equ $+1
 	ld hl, #0000 : inc hl : ld ($-3), hl

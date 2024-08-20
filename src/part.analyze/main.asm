@@ -32,7 +32,6 @@ start
 	xor a : call lib.SetPage
 
 	ld a,#5c : ld i,a : ld hl,interr : ld (#5cff),hl : im 2 : ei
-	; ld a,#be : ld i,a : ld hl,interr : ld (#beff),hl : im 2 : ei
 
 	// Preview part CC
 	ifdef PART_CC
